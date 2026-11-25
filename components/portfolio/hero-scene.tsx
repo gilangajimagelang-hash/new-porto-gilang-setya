@@ -72,12 +72,13 @@ export default function HeroScene({
         position: [0, 0, compact ? 14.5 : 13],
         fov: 25,
       }}
-      dpr={compact ? [1, 1.5] : [1, 2]}
+      dpr={compact ? [0.8, 1] : [1, 1.5]}
       frameloop={active ? 'always' : 'never'}
       gl={{
         antialias: !compact,
         alpha: true,
         powerPreference: 'high-performance',
+        stencil: false,
       }}
       onCreated={({ gl }) => {
         gl.toneMapping = THREE.ACESFilmicToneMapping
@@ -93,8 +94,6 @@ export default function HeroScene({
       aria-label="Interactive 3D name card for Gilang. Drag the card to swing it on its lanyard."
       role="img"
     >
-      {/* PREMIUM STUDIO LIGHTING */}
-
       <ambientLight intensity={1.5} />
 
       <directionalLight
@@ -142,10 +141,8 @@ export default function HeroScene({
           />
         </Physics>
 
-        {/* REFLECTION ENVIRONMENT */}
-
         <Environment
-          resolution={compact ? 128 : 256}
+          resolution={compact ? 64 : 128}
           frames={1}
         >
           <Lightformer
@@ -213,13 +210,13 @@ function useStrapTexture() {
   return useMemo(() => {
     const canvas = document.createElement('canvas')
 
-    canvas.width = 2048
-    canvas.height = 256
+    canvas.width = 1024
+    canvas.height = 128
 
     const ctx = canvas.getContext('2d')
 
     if (ctx) {
-      const gradient = ctx.createLinearGradient(0, 0, 0, 256)
+      const gradient = ctx.createLinearGradient(0, 0, 0, 128)
 
       gradient.addColorStop(0, '#ffffff')
       gradient.addColorStop(0.5, '#eaf4ff')
@@ -228,33 +225,30 @@ function useStrapTexture() {
       ctx.fillStyle = gradient
       ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-      // Navy borders
       ctx.fillStyle = '#17365f'
-      ctx.fillRect(0, 0, canvas.width, 13)
-      ctx.fillRect(0, canvas.height - 13, canvas.width, 13)
+      ctx.fillRect(0, 0, canvas.width, 7)
+      ctx.fillRect(0, canvas.height - 7, canvas.width, 7)
 
-      // Blue diagonal pattern
       ctx.fillStyle = '#60a5fa'
 
-      for (let x = 300; x < canvas.width; x += 120) {
+      for (let x = 150; x < canvas.width; x += 60) {
         ctx.beginPath()
-        ctx.moveTo(x, 13)
-        ctx.lineTo(x + 50, 13)
-        ctx.lineTo(x - 30, canvas.height - 13)
-        ctx.lineTo(x - 80, canvas.height - 13)
+        ctx.moveTo(x, 7)
+        ctx.lineTo(x + 25, 7)
+        ctx.lineTo(x - 15, canvas.height - 7)
+        ctx.lineTo(x - 40, canvas.height - 7)
         ctx.fill()
       }
 
-      // Branding
       ctx.fillStyle = '#102b55'
-      ctx.font = '900 84px system-ui, sans-serif'
+      ctx.font = '900 42px system-ui, sans-serif'
       ctx.textBaseline = 'middle'
-      ctx.fillText('IPA', 80, canvas.height / 2)
+      ctx.fillText('IPA', 40, canvas.height / 2)
 
-      ctx.font = '700 48px system-ui, sans-serif'
+      ctx.font = '700 24px system-ui, sans-serif'
       ctx.fillText(
         'STMIK BINA PATRIA  //  HUMAS  //  MGL-INA',
-        420,
+        210,
         canvas.height / 2,
       )
     }
@@ -263,111 +257,92 @@ function useStrapTexture() {
 
     texture.colorSpace = THREE.SRGBColorSpace
     texture.wrapS = texture.wrapT = THREE.RepeatWrapping
-    texture.anisotropy = 16
+    texture.anisotropy = 8
 
     return texture
   }, [])
 }
 
 // ========================================
-// PREMIUM CARD BACK TEXTURE
+// CARD BACK TEXTURE
 // ========================================
 
 function useCardBackTexture() {
   return useMemo(() => {
     const canvas = document.createElement('canvas')
 
-    canvas.width = 1600
-    canvas.height = 2560
+    canvas.width = 1024
+    canvas.height = 1638
 
     const ctx = canvas.getContext('2d')
 
     if (ctx) {
-      // Navy premium gradient
-      const gradient = ctx.createLinearGradient(
-        0, 0, 1600, 2560,
-      )
+      const gradient = ctx.createLinearGradient(0, 0, 1024, 1638)
 
       gradient.addColorStop(0, '#163f78')
       gradient.addColorStop(0.45, '#0d2850')
       gradient.addColorStop(1, '#07182f')
 
       ctx.fillStyle = gradient
-      ctx.fillRect(0, 0, 1600, 2560)
+      ctx.fillRect(0, 0, 1024, 1638)
 
-      // Geometric pattern
       ctx.strokeStyle = 'rgba(147,197,253,0.10)'
-      ctx.lineWidth = 3
+      ctx.lineWidth = 2
 
-      for (let x = -1000; x < 2000; x += 180) {
+      for (let x = -650; x < 1300; x += 115) {
         ctx.beginPath()
         ctx.moveTo(x, 0)
-        ctx.lineTo(x + 1300, 2560)
+        ctx.lineTo(x + 830, 1638)
         ctx.stroke()
       }
 
-      // Decorative top accent
-      const accent = ctx.createLinearGradient(150, 0, 1450, 0)
+      const accent = ctx.createLinearGradient(95, 0, 930, 0)
 
       accent.addColorStop(0, '#60a5fa')
       accent.addColorStop(0.5, '#dbeafe')
       accent.addColorStop(1, '#60a5fa')
 
       ctx.fillStyle = accent
-      ctx.fillRect(130, 180, 1340, 9)
+      ctx.fillRect(85, 115, 854, 6)
 
-      // Branding
       ctx.textAlign = 'center'
       ctx.textBaseline = 'middle'
 
       ctx.fillStyle = '#93c5fd'
-      ctx.font = '700 68px system-ui, sans-serif'
-      ctx.fillText('HIMTI', 800, 720)
+      ctx.font = '700 44px system-ui, sans-serif'
+      ctx.fillText('HIMTI', 512, 460)
 
       ctx.fillStyle = '#ffffff'
-      ctx.font = '800 100px system-ui, sans-serif'
-      ctx.fillText('STMIK BINA PATRIA', 800, 870)
+      ctx.font = '800 62px system-ui, sans-serif'
+      ctx.fillText('STMIK BINA PATRIA', 512, 555)
 
       ctx.fillStyle = 'rgba(219,234,254,0.82)'
-      ctx.font = 'italic 400 53px system-ui, sans-serif'
+      ctx.font = 'italic 400 34px system-ui, sans-serif'
+      ctx.fillText('Kabinet Pranava vox academia', 512, 625)
 
-      ctx.fillText(
-        'Kabinet Pranava vox academia',
-        800,
-        980,
-      )
-
-      // Divider
       ctx.fillStyle = '#60a5fa'
-      ctx.fillRect(500, 1160, 600, 5)
+      ctx.fillRect(320, 760, 384, 4)
 
-      // Name
       ctx.fillStyle = '#ffffff'
-      ctx.font = '900 205px system-ui, sans-serif'
-      ctx.fillText('GILANG', 800, 1510)
+      ctx.font = '900 130px system-ui, sans-serif'
+      ctx.fillText('GILANG', 512, 990)
 
-      // Position
       ctx.fillStyle = '#93c5fd'
-      ctx.font = '700 85px system-ui, sans-serif'
-      ctx.fillText('HUMAS', 800, 1680)
+      ctx.font = '700 54px system-ui, sans-serif'
+      ctx.fillText('HUMAS', 512, 1110)
 
-      // Bottom detail
       ctx.fillStyle = 'rgba(255,255,255,0.65)'
-      ctx.font = '600 38px system-ui, sans-serif'
-      ctx.fillText(
-        'INFORMATICS ENGINEERING',
-        800,
-        2260,
-      )
+      ctx.font = '600 24px system-ui, sans-serif'
+      ctx.fillText('INFORMATICS ENGINEERING', 512, 1450)
 
       ctx.fillStyle = '#60a5fa'
-      ctx.fillRect(130, 2390, 1340, 9)
+      ctx.fillRect(85, 1530, 854, 6)
     }
 
     const texture = new THREE.CanvasTexture(canvas)
 
     texture.colorSpace = THREE.SRGBColorSpace
-    texture.anisotropy = 16
+    texture.anisotropy = 8
     texture.minFilter = THREE.LinearMipmapLinearFilter
     texture.magFilter = THREE.LinearFilter
     texture.generateMipmaps = true
@@ -424,15 +399,12 @@ function Lanyard({
 
   const { width, height } = useThree((state) => state.size)
 
-  const [dragged, setDragged] = useState<
-    THREE.Vector3 | false
-  >(false)
-
+  const [dragged, setDragged] = useState<THREE.Vector3 | false>(false)
   const [hovered, setHovered] = useState(false)
 
   const front = useTexture('/images/name-card.jpg', (t) => {
     t.colorSpace = THREE.SRGBColorSpace
-    t.anisotropy = 16
+    t.anisotropy = 8
     t.minFilter = THREE.LinearMipmapLinearFilter
     t.magFilter = THREE.LinearFilter
     t.generateMipmaps = true
@@ -441,7 +413,6 @@ function Lanyard({
   const back = useCardBackTexture()
   const strap = useStrapTexture()
 
-  // Physical joints
   useRopeJoint(fixed, j1, [[0, 0, 0], [0, 0, 0], 1])
   useRopeJoint(j1, j2, [[0, 0, 0], [0, 0, 0], 1])
   useRopeJoint(j2, j3, [[0, 0, 0], [0, 0, 0], 1])
@@ -452,7 +423,6 @@ function Lanyard({
     [[0, 0, 0], [0, ANCHOR_Y, 0]],
   )
 
-  // Cursor interaction
   useEffect(() => {
     if (!hovered) return
 
@@ -463,7 +433,6 @@ function Lanyard({
     }
   }, [hovered, dragged])
 
-  // Physics animation
   useFrame((state, delta) => {
     if (
       !fixed.current ||
@@ -476,7 +445,6 @@ function Lanyard({
       return
     }
 
-    // Drag movement
     if (dragged) {
       vec.set(
         state.pointer.x,
@@ -492,10 +460,6 @@ function Lanyard({
         dir.multiplyScalar(state.camera.position.length()),
       )
 
-      ;[card, j1, j2, j3, fixed].forEach((ref) =>
-        ref.current?.wakeUp(),
-      )
-
       card.current.setNextKinematicTranslation({
         x: vec.x - dragged.x,
         y: vec.y - dragged.y,
@@ -503,7 +467,6 @@ function Lanyard({
       })
     }
 
-    // Smooth rope movement
     const joints = [j1.current, j2.current]
 
     if (!lerpReady.current) {
@@ -528,17 +491,15 @@ function Lanyard({
       )
     })
 
-    // Update lanyard curve
     curve.points[0].copy(j3.current.translation())
     curve.points[1].copy(lerped[1])
     curve.points[2].copy(lerped[0])
     curve.points[3].copy(fixed.current.translation())
 
     band.current.geometry.setPoints(
-      curve.getPoints(compact ? 32 : 48),
+      curve.getPoints(compact ? 16 : 24),
     )
 
-    // Natural card rotation
     ang.copy(card.current.angvel())
 
     const q = card.current.rotation()
@@ -555,7 +516,6 @@ function Lanyard({
     )
   })
 
-  // Initial position
   const start = reducedMotion
     ? {
         j1: [0, -1, 0],
@@ -570,7 +530,6 @@ function Lanyard({
         card: [2, 0, 0],
       }
 
-  // Start dragging
   const onPointerDown = (e: ThreeEvent<PointerEvent>) => {
     e.stopPropagation()
 
@@ -582,10 +541,11 @@ function Lanyard({
           .copy(e.point)
           .sub(vec.copy(card.current.translation())),
       )
+
+      card.current.wakeUp()
     }
   }
 
-  // Stop dragging
   const onPointerUp = (e: ThreeEvent<PointerEvent>) => {
     ;(e.target as unknown as Element).releasePointerCapture(e.pointerId)
 
@@ -594,8 +554,6 @@ function Lanyard({
 
   return (
     <>
-      {/* LANYARD PHYSICS */}
-
       <group position={[0, 4.2, 0]}>
         <RigidBody
           ref={fixed}
@@ -652,8 +610,6 @@ function Lanyard({
         </RigidBody>
       </group>
 
-      {/* PREMIUM LANYARD STRAP */}
-
       <mesh ref={band}>
         <meshLineGeometry />
 
@@ -677,7 +633,7 @@ function Lanyard({
 }
 
 // ========================================
-// PREMIUM 3D ID CARD
+// 3D ID CARD
 // ========================================
 
 function Card({
@@ -689,12 +645,10 @@ function Card({
 }) {
   return (
     <group>
-      {/* Premium card body */}
-
       <RoundedBox
         args={[HOLDER_W, HOLDER_H, 0.075]}
         radius={0.09}
-        smoothness={8}
+        smoothness={6}
         position={[0, 0.1, -0.025]}
       >
         <meshPhysicalMaterial
@@ -706,8 +660,6 @@ function Card({
           envMapIntensity={1.5}
         />
       </RoundedBox>
-
-      {/* Front photo */}
 
       <mesh position={[0, 0, 0.022]}>
         <planeGeometry args={[CARD_W, CARD_H]} />
@@ -723,8 +675,6 @@ function Card({
           toneMapped={false}
         />
       </mesh>
-
-      {/* Back design */}
 
       <mesh
         position={[0, 0, -0.022]}
@@ -744,12 +694,10 @@ function Card({
         />
       </mesh>
 
-      {/* Acrylic transparent holder */}
-
       <RoundedBox
         args={[HOLDER_W + 0.035, HOLDER_H + 0.035, 0.045]}
         radius={0.105}
-        smoothness={8}
+        smoothness={6}
         position={[0, 0.1, 0.005]}
       >
         <meshPhysicalMaterial
@@ -765,12 +713,10 @@ function Card({
         />
       </RoundedBox>
 
-      {/* Metallic outer accent */}
-
       <RoundedBox
         args={[HOLDER_W + 0.055, HOLDER_H + 0.055, 0.018]}
         radius={0.115}
-        smoothness={8}
+        smoothness={6}
         position={[0, 0.1, 0.035]}
       >
         <meshPhysicalMaterial
@@ -784,12 +730,10 @@ function Card({
         />
       </RoundedBox>
 
-      {/* Top clip */}
-
       <RoundedBox
         args={[0.46, 0.09, 0.065]}
         radius={0.035}
-        smoothness={6}
+        smoothness={4}
         position={[0, HOLDER_H / 2 + 0.075, 0]}
       >
         <meshPhysicalMaterial
@@ -800,11 +744,9 @@ function Card({
         />
       </RoundedBox>
 
-      {/* Metallic ring */}
-
       <group position={[0, ANCHOR_Y - 0.06, 0]}>
         <mesh>
-          <torusGeometry args={[0.095, 0.024, 24, 64]} />
+          <torusGeometry args={[0.095, 0.024, 12, 32]} />
 
           <meshStandardMaterial
             color="#e2e8f0"
