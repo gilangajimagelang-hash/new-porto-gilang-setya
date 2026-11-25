@@ -273,26 +273,22 @@
    GLASSMORPHISM (LIGHT & DARK)
 ========================================= */
 
-@utility glass {
-  background: rgb(255 255 255 / 0.78);
-  border: 1px solid rgb(148 163 184 / 0.22);
-
+.glass {
+  background-color: rgb(255 255 255 / 0.82);
+  border: 1px solid rgb(15 23 42 / 0.09);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-
-  border-radius: var(--radius);
-
   box-shadow:
-    0 8px 32px rgb(15 23 42 / 0.06),
-    inset 0 1px 0 rgb(255 255 255 / 0.9);
+    0 8px 32px rgb(15 23 42 / 0.08),
+    inset 0 1px 0 rgb(255 255 255 / 0.95);
+}
 
-  .dark & {
-    background: rgb(12 18 34 / 0.72);
-    border-color: rgb(148 163 184 / 0.14);
-    box-shadow:
-      0 10px 36px rgb(0 0 0 / 0.45),
-      inset 0 1px 0 rgb(255 255 255 / 0.06);
-  }
+.dark .glass {
+  background-color: rgb(12 18 34 / 0.78);
+  border-color: rgb(255 255 255 / 0.11);
+  box-shadow:
+    0 10px 40px rgb(0 0 0 / 0.52),
+    inset 0 1px 0 rgb(255 255 255 / 0.06);
 }
 
 /* =========================================
@@ -310,19 +306,19 @@
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
 
-  .dark & {
-    background: linear-gradient(
-      100deg,
-      #22d3ee 0%,
-      #38bdf8 45%,
-      #818cf8 100%
-    );
+.dark .text-gradient {
+  background: linear-gradient(
+    100deg,
+    #22d3ee 0%,
+    #38bdf8 45%,
+    #818cf8 100%
+  );
 
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 /* =========================================
@@ -402,19 +398,19 @@
     );
 
   background-size: 60px 60px;
+}
 
-  .dark & {
-    background-image:
-      linear-gradient(
-        rgb(148 163 184 / 0.07) 1px,
-        transparent 1px
-      ),
-      linear-gradient(
-        90deg,
-        rgb(148 163 184 / 0.07) 1px,
-        transparent 1px
-      );
-  }
+.dark .bg-grid {
+  background-image:
+    linear-gradient(
+      rgb(148 163 184 / 0.07) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgb(148 163 184 / 0.07) 1px,
+      transparent 1px
+    );
 }
 
 /* =========================================
